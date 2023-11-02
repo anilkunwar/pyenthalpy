@@ -85,7 +85,9 @@ if uploaded_file is not None:
         HM_values = eq_result.HM.values.flatten()
 
         # Create a DataFrame from the flattened data
-        result_df = pd.DataFrame({'T': T_values, 'H': HM_values})
+        #result_df = pd.DataFrame({'T': T_values, 'H': HM_values})
+        # Create a DataFrame from the flattened data
+        result_df = pd.DataFrame({'S.N.': range(1, len(T_values) + 1), 'T': T_values, 'H': HM_values})
 
         equilibrium_results.append(result_df)  # Append the result for this set of input values
 
