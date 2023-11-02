@@ -21,11 +21,13 @@ if uploaded_file is not None:
     dbf = Database(tdb_path)
 
     # Input field for selecting elements via a dropdown
-    st.sidebar.header("Select Elements")
+    st.sidebar.header("Select All the  Elements of the Alloy and Exclude VA here. It will be included later on.")
     default_elements = list(dbf.elements)  # Use the elements from the database
     selected_elements = st.multiselect("Select Elements", sorted(default_elements), default=default_elements)
 
     # Remove the element that is alphabetically the farthest by default
+    # For N element alloy, the composition information of N-1 element will be sufficient
+    # This part will remove the information of the farthest element (in alphabetical order)
     farthest_element = max(selected_elements)
     selected_elements.remove(farthest_element)
 
@@ -42,8 +44,11 @@ if uploaded_file is not None:
         if element != 'VA':
             user_mole_fractions[element] = st.sidebar.number_input(f"Mole Fraction of {element}", 0.0, 1.0, 0.1)
 
+    # The composition information in eq_result i.e. selected_elements will have to include all of the elements + VA
     # Include the element excluded from mole fractions in selected_elements
     selected_elements.append(farthest_element)
+    # Append 'VA' to the selected_elements for eq_result
+    selected_elements.append('VA')
 
     # Perform the equilibrium calculation with user-defined conditions
     user_conditions = {v.T: (user_temperature_start, user_temperature_end, user_temperature_step), v.P: user_pressure}
