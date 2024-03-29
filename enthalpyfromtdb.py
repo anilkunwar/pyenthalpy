@@ -78,7 +78,20 @@ if uploaded_file is not None:
                 user_conditions[v.X(element)] = fraction
 
         # Equilibrium calculation with selected_elements (including 'VA') and user_conditions
-        eq_result = equilibrium(dbf, selected_elements, ['LIQUID', 'HCP_A3'], user_conditions, output='HM')
+        #eq_result = equilibrium(dbf, selected_elements, ['LIQUID', 'HCP_A3'], user_conditions, output='HM')
+        # To allow the selection of any two phases from the list of available phases in the TDB (or tdb) file
+        # Define a function to select two phases from the available phases
+        def select_phases(phases):
+            print("Available phases:", phases)
+            phase1 = input("Enter the first phase: ").strip()
+            phase2 = input("Enter the second phase: ").strip()
+            return [phase1, phase2]
+
+        # Get the user-selected phases
+        selected_phases = select_phases(dbf.phases.keys())
+
+        # Run equilibrium calculation with user-selected phases
+        eq_result = equilibrium(dbf, selected_elements, selected_phases, user_conditions, output='HM')
 
         # Extract values from the DataArray and then flatten
         T_values = eq_result.T.values.flatten()
