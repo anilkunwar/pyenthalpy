@@ -48,7 +48,7 @@ if uploaded_file is not None:
             f"Starting Temperature (K) (Set {condition_counter})", 300, 2000, 300
         )
         user_temperature_end = st.sidebar.number_input(
-            f"Ending Temperature (K) (Set {condition_counter})", 1000, 3000, 1850
+            f"Ending Temperature (K) (Set {condition_counter})", 305, 3000, 1850
         )
         user_temperature_step = st.sidebar.number_input(
             f"Temperature Step (K) (Set {condition_counter})", 1, 200, 10
@@ -81,14 +81,32 @@ if uploaded_file is not None:
         #eq_result = equilibrium(dbf, selected_elements, ['LIQUID', 'HCP_A3'], user_conditions, output='HM')
         # To allow the selection of any two phases from the list of available phases in the TDB (or tdb) file
         # Define a function to select two phases from the available phases
-        def select_phases(phases):
-            print("Available phases:", phases)
-            phase1 = input("Enter the first phase: ").strip()
-            phase2 = input("Enter the second phase: ").strip()
-            return [phase1, phase2]
+        #def select_phases(phases):
+            #print("Available phases:", phases)
+            #phase1 = input("Enter the first phase: ").strip()
+            #phase2 = input("Enter the second phase: ").strip()
+            #return [phase1, phase2]
 
-        # Get the user-selected phases
-        selected_phases = select_phases(dbf.phases.keys())
+        ## Get the user-selected phases
+        #selected_phases = select_phases(dbf.phases.keys())
+         # Fetch available phases from the database
+        available_phases = list(dbf.phases.keys())
+
+        # Multiselect box for selecting equilibrium phases
+        #selected_phases = st.sidebar.multiselect(
+        #    f"Select Equilibrium Phases (Set {condition_counter})",
+        #    available_phases,
+        #    default=['LIQUID', 'HCP_A3']
+        #)
+        # Get the first two phases listed in the database as default phases
+        default_phases = available_phases[:2]
+
+        # Multiselect box for selecting equilibrium phases
+        selected_phases = st.sidebar.multiselect(
+            f"Select Equilibrium Phases (Set {condition_counter})",
+            available_phases,
+            default=default_phases
+        )
 
         # Run equilibrium calculation with user-selected phases
         eq_result = equilibrium(dbf, selected_elements, selected_phases, user_conditions, output='HM')
